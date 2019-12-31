@@ -1,6 +1,6 @@
 # Losol.Communication
 
-![](https://github.com/losol/Losol.Communication/workflows/dotnetcore/badge.svg)
+![](https://github.com/losol/Losol.Communication/workflows/dotnetcore.yml/badge.svg)
 
 ## Email Services
 
