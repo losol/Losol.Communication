@@ -1,6 +1,6 @@
 # Losol.Communication
 
-![https://github.com/losol/Losol.Communication/workflows/Build/badge.svg]
+![](https://github.com/losol/Losol.Communication/workflows/Build/badge.svg)
 
 ## Email Services
 
