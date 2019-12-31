@@ -1,6 +1,6 @@
 # Losol.Communication
 
-![](https://github.com/actions/hello-world/workflows/Greet%20Everyone/badge.svg)
+![](https://github.com/losol/Losol.Communication/workflows/.NET%20core/badge.svg)
 
 ![](https://github.com/losol/Losol.Communication/workflows/.github/workflows/dotnetcore.yml/badge.svg)
 
