@@ -1,6 +1,6 @@
 # Losol.Communication
 
-![](https://github.com/losol/Losol.Communication/workflows/.NET%20Core/badge.svg)
+!(https://github.com/losol/Losol.Communication/workflows/.NET%20Core/badge.svg)
 
 ## Email Services
 
