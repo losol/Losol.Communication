@@ -16,17 +16,24 @@ namespace Losol.Communication.Email.SendGrid
             _config = options.Value;
         }
 
-        public async Task SendEmailAsync(
+        public Task SendEmailAsync(
             string address,
             string subject,
             string message,
             Attachment attachment = null,
             EmailMessageType messageType = EmailMessageType.Html)
         {
+            return SendEmailAsAsync(_config.Name, _config.EmailAddress,
+                address, subject, message, attachment, messageType);
+        }
+
+        public async Task SendEmailAsAsync(string fromName, string fromEmail, string address, string subject, string message,
+            Attachment attachment = null, EmailMessageType messageType = EmailMessageType.Html)
+        {
             var client = new SendGridClient(_config.Key);
             var msg = new SendGridMessage
             {
-                From = new EmailAddress(_config.EmailAddress, _config.Name),
+                From = new EmailAddress(fromEmail, fromName),
                 Subject = subject
             };
             switch (messageType)

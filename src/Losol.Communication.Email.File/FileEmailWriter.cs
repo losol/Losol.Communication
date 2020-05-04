@@ -3,16 +3,15 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Losol.Communication.Email.File
 {
-    /// <summary>
-    /// Writes an email to a file instead of actually sending it.
-    /// This implementation is not designed to be used in production.
-    /// </summary>
-    public class FileEmailWriter : IEmailSender
+	/// <summary>
+	/// Writes an email to a file instead of actually sending it.
+	/// This implementation is not designed to be used in production.
+	/// </summary>
+	public class FileEmailWriter : IEmailSender
     {
         private readonly IOptions<FileEmailConfig> _options;
 
@@ -33,11 +32,17 @@ namespace Losol.Communication.Email.File
             EmailMessageType messageType = EmailMessageType.Html)
         {
             // filename: {datetime}-{email}-{subject}.html
-            var filename = $"{DateTime.Now.ToString("yyyyMMdd-HHmmss")}-{address.GenerateSlug()}-{subject.GenerateSlug()}.html";
+            var filename = $"{DateTime.Now:yyyyMMdd-HHmmss}-{address.GenerateSlug()}-{subject.GenerateSlug()}.html";
 
             // Write the message to the file
             await using var outputFile = new StreamWriter(Path.Combine(_options.Value.FilePath, filename));
             await outputFile.WriteLineAsync(message);
+        }
+
+        public Task SendEmailAsAsync(string fromName, string fromEmail, string address, string subject, string message,
+            Attachment attachment = null, EmailMessageType messageType = EmailMessageType.Html)
+        {
+            return SendEmailAsync(address, subject, message, attachment, messageType);
         }
     }
 

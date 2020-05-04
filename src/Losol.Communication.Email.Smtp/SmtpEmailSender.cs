@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using MimeKit;
 using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Losol.Communication.Email.Smtp
@@ -20,17 +21,13 @@ namespace Losol.Communication.Email.Smtp
             _logger = logger;
         }
 
-        public Task SendEmailAsync(
-            string address,
-            string subject,
-            string message,
-            Attachment attachment = null,
-            EmailMessageType messageType = EmailMessageType.Html)
+        public async Task SendEmailAsAsync(string fromName, string fromEmail, string address, string subject, string message,
+            Attachment attachment = null, EmailMessageType messageType = EmailMessageType.Html)
         {
             var mimeMessage = new MimeMessage();
 
             mimeMessage.To.Add(MailboxAddress.Parse(address));
-            mimeMessage.From.Add(MailboxAddress.Parse(_smtpConfig.From));
+            mimeMessage.From.Add(new MailboxAddress(Encoding.UTF8, fromName, fromEmail));
 
             mimeMessage.Subject = subject;
 
@@ -60,14 +57,14 @@ namespace Losol.Communication.Email.Smtp
             {
                 _logger.LogInformation($"*** START SEND EMAIL BY SMTP - Smtp host: {_smtpConfig.Host} - Port: {_smtpConfig.Port}***");
 
-                emailClient.Connect(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls);
+                await emailClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, SecureSocketOptions.StartTls);
                 if (!string.IsNullOrEmpty(_smtpConfig.Username) &&
                     !string.IsNullOrEmpty(_smtpConfig.Password))
                 {
-                    emailClient.Authenticate(_smtpConfig.Username, _smtpConfig.Password);
+                    await emailClient.AuthenticateAsync(_smtpConfig.Username, _smtpConfig.Password);
                 }
-                emailClient.Send(mimeMessage);
-                emailClient.Disconnect(true);
+                await emailClient.SendAsync(mimeMessage);
+                await emailClient.DisconnectAsync(true);
 
                 _logger.LogInformation("*** END SEND EMAIL ***");
             }
@@ -75,8 +72,17 @@ namespace Losol.Communication.Email.Smtp
             {
                 _logger.LogError(ex.Message);
             }
+        }
 
-            return Task.CompletedTask;
+        public Task SendEmailAsync(
+            string address,
+            string subject,
+            string message,
+            Attachment attachment = null,
+            EmailMessageType messageType = EmailMessageType.Html)
+        {
+            var from = MailboxAddress.Parse(_smtpConfig.From);
+            return SendEmailAsAsync(from.Name, from.Address, address, subject, message, attachment, messageType);
         }
     }
 }
